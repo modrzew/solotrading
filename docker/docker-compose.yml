@@ -8,6 +8,8 @@ services:
     env_file: ../.env
     environment:
       DATABASE_URL: postgresql://solotrading:solotrading@db:5432/solotrading
+    volumes:
+      - uploads:/app/uploads
     depends_on:
       db:
         condition: service_healthy
@@ -28,3 +30,4 @@ services:
 
 volumes:
   pgdata:
+  uploads:
