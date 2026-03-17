@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  numeric,
   pgTable,
   pgTableCreator,
   text,
@@ -114,7 +115,7 @@ export const expenses = createTable(
       .references(() => payees.id),
     date: timestamp("date").notNull(),
     description: text("description"),
-    amount: text("amount").notNull(),
+    amount: numeric("amount").notNull(),
     currency: varchar("currency", { length: 3 }).notNull().default("AUD"),
     createdAt: timestamp("created_at")
       .notNull()
