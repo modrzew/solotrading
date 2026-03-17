@@ -20,18 +20,9 @@ bun run db:studio    # Open Drizzle Studio GUI
 
 ## Architecture
 
-### Dual-dialect database
+### Database
 
-The app supports both SQLite (default, for local dev) and Postgres (for production). The dialect is determined by `DATABASE_URL`:
-- `file:db.sqlite` → SQLite via `better-sqlite3`
-- `postgresql://...` → Postgres via `pg`
-
-Three schema files work together:
-- `src/server/db/schema.sqlite.ts` — SQLite table definitions
-- `src/server/db/schema.pg.ts` — Postgres table definitions
-- `src/server/db/schema.ts` — Barrel that re-exports from the correct dialect at runtime
-
-`src/server/db/index.ts` creates the Drizzle instance. TypeScript types are pinned to SQLite (`BetterSQLite3Database`); the Postgres path casts through `unknown`. This is intentional — runtime SQL generation uses actual object metadata, not TS types.
+Postgres via `pg` + `drizzle-orm/node-postgres`. Schema lives in `src/server/db/schema.ts`, db instance in `src/server/db/index.ts`.
 
 App tables are prefixed with `solotrading_` via `createTable`. Auth tables (user, session, account, verification) are unprefixed and managed by Better Auth.
 
