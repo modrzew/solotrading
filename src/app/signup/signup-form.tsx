@@ -50,7 +50,7 @@ export function SignupForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/5 text-base transition-colors focus:bg-white/[7%]"
+            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/8 text-base transition-colors focus:bg-white/12"
           />
         </div>
         <div className="space-y-2">
@@ -63,7 +63,7 @@ export function SignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/5 text-base transition-colors focus:bg-white/[7%]"
+            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/8 text-base transition-colors focus:bg-white/12"
           />
         </div>
         <div className="space-y-2">
@@ -77,7 +77,7 @@ export function SignupForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={8}
-            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/5 text-base transition-colors focus:bg-white/[7%]"
+            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/8 text-base transition-colors focus:bg-white/12"
           />
         </div>
         <Button

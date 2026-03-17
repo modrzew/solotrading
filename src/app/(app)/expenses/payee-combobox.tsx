@@ -32,7 +32,7 @@ export function PayeeCombobox({
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="focus:border-neon-violet/50 flex h-11 w-full items-center rounded-xl border border-white/10 bg-white/5 px-4 text-left text-base transition-colors hover:bg-white/[7%]">
+      <PopoverTrigger className="focus:border-neon-violet/50 flex h-11 w-full items-center rounded-xl border border-white/10 bg-white/8 px-4 text-left text-base transition-colors hover:bg-white/[7%]">
         <span className={value ? "text-foreground" : "text-muted-foreground"}>
           {value || "Select payee..."}
         </span>

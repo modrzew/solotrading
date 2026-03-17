@@ -14,6 +14,8 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { PayeeCombobox } from "./payee-combobox";
+import { CurrencyPicker } from "./currency-picker";
+import { getCurrency } from "~/lib/currencies";
 
 type ExpenseData = {
   id: number;
@@ -26,7 +28,7 @@ type ExpenseData = {
 };
 
 const inputClass =
-  "h-11 rounded-xl border-white/10 bg-white/5 text-base transition-colors focus:border-neon-violet/50 focus:bg-white/[7%]";
+  "h-11 rounded-xl border-white/10 bg-white/8 text-base transition-colors focus:border-neon-violet/50 focus:bg-white/12";
 
 export function ExpenseForm({
   expense,
@@ -49,9 +51,11 @@ export function ExpenseForm({
   const [currency, setCurrency] = useState(
     expense?.currency ?? defaultCurrency,
   );
+  const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const utils = api.useUtils();
+  const currencyInfo = getCurrency(currency);
 
   const create = api.expenses.create.useMutation({
     onSuccess: async (data) => {
@@ -135,64 +139,47 @@ export function ExpenseForm({
             >
               Description
             </Label>
-            <Input
+            <textarea
               id="description"
+              rows={2}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={inputClass}
+              className="focus:border-neon-violet/50 w-full resize-none rounded-xl border border-white/10 bg-white/8 px-3 py-2.5 text-base transition-colors outline-none focus:bg-white/12"
             />
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2 space-y-2">
-              <Label htmlFor="amount" className="text-muted-foreground text-sm">
-                Amount
-              </Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                required
-                className={inputClass}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label
-                htmlFor="currency"
-                className="text-muted-foreground text-sm"
-              >
-                Currency
-              </Label>
-              <select
-                id="currency"
-                className="focus:border-neon-violet/50 flex h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-base transition-colors outline-none focus:bg-white/[7%]"
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-              >
-                {["AUD", "USD", "EUR", "GBP", "NZD", "CAD", "JPY"].map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground text-sm">Amount</Label>
+            <div className="flex items-center gap-2">
+              <CurrencyPicker value={currency} onChange={setCurrency} />
+              <div className="focus-within:border-neon-violet/50 flex flex-1 items-center gap-0 rounded-xl border border-white/10 bg-white/8 transition-colors focus-within:bg-white/12">
+                <span className="text-muted-foreground shrink-0 pl-3 font-serif text-lg">
+                  {currencyInfo.symbol}
+                </span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  required
+                  placeholder="0.00"
+                  className="h-11 w-full bg-transparent pr-3 pl-1 font-serif text-2xl font-medium outline-none"
+                />
+              </div>
             </div>
           </div>
           <div className="space-y-2">
             <Label className="text-muted-foreground text-sm">Receipt</Label>
             <label className="text-muted-foreground hover:border-neon-violet/30 flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-white/10 bg-white/[3%] px-4 text-sm transition-colors hover:bg-white/5">
               <Upload className="size-4" />
-              {fileInputRef.current?.files?.[0]?.name ??
-                "Upload PDF, PNG, or JPG"}
+              {fileName ?? "Upload PDF, PNG, or JPG"}
               <input
                 type="file"
                 accept=".pdf,.png,.jpg,.jpeg"
                 ref={fileInputRef}
                 className="hidden"
                 onChange={() => {
-                  // Force re-render to show filename
-                  setAmount(amount);
+                  setFileName(fileInputRef.current?.files?.[0]?.name ?? null);
                 }}
               />
             </label>

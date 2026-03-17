@@ -185,7 +185,7 @@ export function ExpensesTable() {
             placeholder="Search expenses..."
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/5 pl-10 text-base transition-colors focus:bg-white/[7%]"
+            className="focus:border-neon-violet/50 h-11 rounded-xl border-white/10 bg-white/8 pl-10 text-base transition-colors focus:bg-white/12"
           />
         </div>
         <Button

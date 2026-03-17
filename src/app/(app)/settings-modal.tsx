@@ -11,19 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-
-const CURRENCIES = [
-  "AUD",
-  "USD",
-  "EUR",
-  "GBP",
-  "NZD",
-  "CAD",
-  "JPY",
-  "CHF",
-  "SGD",
-  "HKD",
-];
+import { CURRENCIES } from "~/lib/currencies";
 
 const FY_TYPES = [
   { value: "jan-dec" as const, label: "January - December" },
@@ -31,7 +19,7 @@ const FY_TYPES = [
 ];
 
 const selectClass =
-  "flex h-11 w-full rounded-xl border border-white/10 bg-white/5 px-3 text-base outline-none transition-colors focus:border-neon-violet/50 focus:bg-white/[7%]";
+  "flex h-11 w-full rounded-xl border border-white/10 bg-white/8 px-3 text-base outline-none transition-colors focus:border-neon-violet/50 focus:bg-white/12";
 
 export function SettingsModal({ onClose }: { onClose: () => void }) {
   const { data: settings } = api.settings.get.useQuery();
@@ -67,8 +55,8 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
               onChange={(e) => setCurrency(e.target.value)}
             >
               {CURRENCIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
+                <option key={c.code} value={c.code}>
+                  {c.flag} {c.code} — {c.name}
                 </option>
               ))}
             </select>
