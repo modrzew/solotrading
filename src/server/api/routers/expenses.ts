@@ -51,6 +51,7 @@ export const expensesRouter = createTRPCRouter({
           input?.sortOrder === "asc"
             ? sql`${input?.sortBy === "amount" ? expenses.amount : input?.sortBy === "payee" ? payees.name : expenses.date} asc`
             : sql`${input?.sortBy === "amount" ? expenses.amount : input?.sortBy === "payee" ? payees.name : expenses.date} desc`,
+          sql`${expenses.id} desc`,
         );
 
       return rows;

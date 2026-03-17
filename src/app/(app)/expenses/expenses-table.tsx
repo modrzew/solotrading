@@ -76,6 +76,7 @@ export function ExpensesTable() {
           day: "numeric",
           month: "short",
           year: "numeric",
+          timeZone: "UTC",
         }),
     },
     {
