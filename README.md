@@ -19,3 +19,5 @@ Yeah, that's it, I only need expenses for now so that's everything there is. Sta
 ## Production
 
 How adventurous, deploying a vibe coded project to production!
+
+Check out [docker-compose.yml](docker-compose.yml).
