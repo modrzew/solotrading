@@ -3,20 +3,16 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
 import { db } from "~/server/db";
 
+const isPg = (process.env.DATABASE_URL ?? "").startsWith("postgres");
+
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: "mysql", // or "pg" or "mysql"
+    provider: isPg ? "pg" : "sqlite",
   }),
   emailAndPassword: {
     enabled: true,
   },
-  socialProviders: {
-    // github: {
-    //   clientId: env.BETTER_AUTH_GITHUB_CLIENT_ID,
-    //   clientSecret: env.BETTER_AUTH_GITHUB_CLIENT_SECRET,
-    //   redirectURI: "http://localhost:3000/api/auth/callback/github",
-    // },
-  },
+  socialProviders: {},
 });
 
 export type Session = typeof auth.$Infer.Session;

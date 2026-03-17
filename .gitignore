@@ -9,9 +9,10 @@
 /coverage
 
 # database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
-db.sqlite
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
 
 # next.js
 /.next/
@@ -44,3 +45,6 @@ yarn-error.log*
 
 # idea files
 .idea
+
+# uploads
+uploads/

@@ -1,106 +1,37 @@
-import { relations } from "drizzle-orm";
-import {
-  boolean,
-  index,
-  mysqlTable,
-  mysqlTableCreator,
-  text,
-  timestamp,
-  varchar,
-} from "drizzle-orm/mysql-core";
+/**
+ * Schema re-export layer.
+ *
+ * Both schema.sqlite.ts and schema.pg.ts export identical table names with
+ * matching column names. At runtime the correct dialect's tables are used
+ * based on DATABASE_URL. TypeScript sees the SQLite types (the default
+ * dialect), but a type assertion lets the Postgres Drizzle instance accept
+ * them too — the actual SQL generation is driven by the runtime table
+ * metadata, not the TS types.
+ */
+import * as sqliteSchema from "./schema.sqlite";
+import * as pgSchema from "./schema.pg";
 
-export const createTable = mysqlTableCreator((name) => `solotrading_${name}`);
+const isPg = (process.env.DATABASE_URL ?? "").startsWith("postgres");
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.bigint({ mode: "number" }).primaryKey().autoincrement(),
-    name: d.varchar({ length: 256 }),
-    createdById: d
-      .varchar({ length: 255 })
-      .notNull()
-      .references(() => user.id),
-    createdAt: d
-      .timestamp()
-      .$defaultFn(() => /* @__PURE__ */ new Date())
-      .notNull(),
-    updatedAt: d.timestamp().onUpdateNow(),
-  }),
-  (t) => [
-    index("created_by_idx").on(t.createdById),
-    index("name_idx").on(t.name),
-  ],
-);
+// Pick the right runtime implementation, typed as SQLite (default).
+// When using Postgres, the db/index.ts casts appropriately.
+const s = isPg ? (pgSchema as unknown as typeof sqliteSchema) : sqliteSchema;
 
-export const user = mysqlTable("user", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  name: text("name").notNull(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  emailVerified: boolean("email_verified")
-    .$defaultFn(() => false)
-    .notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-  updatedAt: timestamp("updated_at")
-    .$defaultFn(() => /* @__PURE__ */ new Date())
-    .notNull(),
-});
+export const createTable = s.createTable;
 
-export const session = mysqlTable("session", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  expiresAt: timestamp("expires_at").notNull(),
-  token: varchar("token", { length: 255 }).notNull().unique(),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
-  ipAddress: text("ip_address"),
-  userAgent: text("user_agent"),
-  userId: varchar("user_id", { length: 36 })
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-});
+export const user = s.user;
+export const session = s.session;
+export const account = s.account;
+export const verification = s.verification;
 
-export const account = mysqlTable("account", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  accountId: text("account_id").notNull(),
-  providerId: text("provider_id").notNull(),
-  userId: varchar("user_id", { length: 36 })
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  idToken: text("id_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at"),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-  scope: text("scope"),
-  password: text("password"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
-});
+export const userSettings = s.userSettings;
+export const payees = s.payees;
+export const expenses = s.expenses;
+export const receipts = s.receipts;
 
-export const verification = mysqlTable("verification", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").$defaultFn(
-    () => /* @__PURE__ */ new Date(),
-  ),
-  updatedAt: timestamp("updated_at").$defaultFn(
-    () => /* @__PURE__ */ new Date(),
-  ),
-});
-
-export const usersRelations = relations(user, ({ many }) => ({
-  accounts: many(account),
-  sessions: many(session),
-}));
-
-export const accountsRelations = relations(account, ({ one }) => ({
-  user: one(user, { fields: [account.userId], references: [user.id] }),
-}));
-
-export const sessionsRelations = relations(session, ({ one }) => ({
-  user: one(user, { fields: [session.userId], references: [user.id] }),
-}));
+export const usersRelations = s.usersRelations;
+export const accountsRelations = s.accountsRelations;
+export const sessionsRelations = s.sessionsRelations;
+export const expensesRelations = s.expensesRelations;
+export const payeesRelations = s.payeesRelations;
+export const receiptsRelations = s.receiptsRelations;
