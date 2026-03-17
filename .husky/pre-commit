@@ -1,0 +1,5 @@
+bun run format:write
+bun run lint:fix
+bun run typecheck
+
+git diff --name-only --diff-filter=M | xargs -r git add
